@@ -1,0 +1,65 @@
+1、安装桌面环境
+	
+	$sudo dnf groupinstall "Server with GUI"
+
+2、安装VNC服务器
+
+	$sudo dnf install tigervnc-server
+	
+	初始化设置
+
+	vncserver   设置密码
+
+	第一次运行vncserver命令，它将会在~/.vnc目录下创建并且存储密码文件。如果该文件夹没有被创建，那么首先会创建该文件夹。
+	请留意上面主机名后面的:1。则表示 正在运行的 VNC 服务器上的显示端口号。在我们的例子中，服务器运行在 TCP 端口5901(5900+1)。如果你创建了第二个实例，他将会运行到下一个闲置的端口上，例如::2，这意味着，服务器运行在端口号5902（5900+2）上。
+	在和 VNC 服务器上工作的时候，最重要的一点就是，:X就是显示端口号，即：5900+X
+
+	列出实例
+	
+	vncserver -listE
+
+	停止实例
+	
+	vncserver -kill  ID
+
+3、配置VNC服务器
+
+	~/.vnc/xstartup    //配置文件路径
+
+	~/.vnc/config
+
+	#!/bin/sh
+	[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup
+	[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+	vncconfig -iconic &
+	dbus-launch --exit-with-session gnome-session &
+
+4、创建Systemd Unit文件
+	
+	Unit files允许你很容易地启动，停止和重启服务。通常情况下，存储用户unit文件的最好位置是~/.config/systemd/user
+
+	mkdir -p ~/.config/systemd/user    //创建文件夹
+
+	cp /usr/lib/systemd/user/vncserver@.service ~/.config/systemd/user/    //拷贝默认的Unit文件夹
+
+	通知systemd,一个新的用户Unit 文件已经存在：
+
+	systemctl --user daemon-reload
+
+	启动VNC服务，并且启用开机启动：
+
+	systemctl --user enable vncserver@:1.service --now
+
+	启用lingering 以便在用户没有登录时，用户服务可以保持开机启动并且保持运行状态
+
+	loginctl enable-linger
+
+	验证服务是否成功启动
+
+	systemctl --user status vncserver@:1.service
+
+
+ssh -L 5901:127.0.0.1:5901 -N -f -l username remote_server_ip
+
+$ssh -v -C -L 590N:localhost:590M hostB
+
