@@ -1,0 +1,198 @@
+###
+##### 检查sshd服务是否启动
+```bash
+$  ps -ef |grep sshd
+```
+##### 检查端口是否正常
+```bash
+$ telnet 192.168.1.100:80
+```
+##### 关闭防火墙
+```bash
+$ sudo systemctl stop firewalld 
+```
+##### Linux 目录结构
+
+### 运维必备的网络管理技能
+Linux 系统在服务器市场占有很大的份额，尤其是在互联网时代。
+对于提供互联网服务的服务器，网络防火墙是其抵御攻击破坏的安全屏障，如何在攻击时及时做出有效的措施是网络应用时时刻刻要面对的问题。高昂的硬件防火墙是一般开发者难以接受的。Linux的出现，为开发者降低成本解决安全问题提供了一种可行的方案。要熟练应用Linux防火墙，要先了解TCP/IP网络的基本原理，理解Linux防火墙的工作原理，并熟练掌握Linux 系统下提供的各种工具。
+
+- 网络管理协议
+- 常用的网络管理命令
+- Linux的网络配置方法
+
+OSI参考模型
+网络字节顺序
+地址解析协议
+显示添加或修改路由表route
+复制文件至其他系统scp ##可以将本地文件传送到远程主机或从远程主机拉取文件到本地
+  Linux 系统下常用的数据镜像备份工具，用于在不同的主机之间同步文件。rsync 可以镜像保存整个目录树和文件系统，并可以增量同步，并保持文件原来的属性，如权限、时间戳等。rsync 数据传输过程中是加密的，保证数据的安全性。
+
+显示网络连接、路由表或接口状态netstat   
+netstat 用于监控系统网络配置和工作情况，可以显示内核路由表、活动的网络状态以及每个网络接口有用的统计数字。
+探测至目的地址的路由信息traceroute
+下载网络文件wget 
+/etc/hostname    	#修改主机名称
+/etc/sysconfig/network-scrips/ifcfg-ensxx    	#配置网卡的参数文件
+/etc/resolv.conf		#DNS相关信息
+/etc/hosts
+/etc/nsswitch.conf
+.
+同一个网络接口可以使用子接口的方式设置多个IP地址
+
+服务器重启或网络服务重启后，子接口配置将消失，如需重启后依然生效，可以将配置子接口命令加入/etc/rc.local文件中
+
+设置默认网关
+route add default gw 192.168.1.254
+
+/etc/sysconfig/network-scrips/ifcfg-接口文件中添加如下字段
+
+GATEWAY = 192.168.1.254
+
+重启网络服务使设置生效
+
+设置DNS 
+/etc/resolv.conf
+nameserver 192.168.1.1
+nameserver 192.168.2.1
+options rotate 		#在DNSserver之间轮询
+options timout:1   attemps:2	#解析超时时间/解析域名尝试的次数
+
+
+### Linux 默认防火墙firewalld    iptables
+firewalld仅仅是替代了iptables service部分，底层还是使用iptables 作为防火墙规则管理入口
+
+#### 静态防火墙和动态防火墙
+iptables一般称为静态防火墙，即使只修改一条规则也要把所有规则都重新载入，在修改规则的时候对整个系统网络造成影响。firewalld 任何规则的变更都只需要将变更部分保存并更新到运行中的iptables就可以了。
+firewalld 的配置文件被放置在不同的XML文件中。
+
+区域模型的定义 zone
+服务Service         /usr/lib/firewalld/service		/etc/firewalld/services
+
+firewalld 的服务管理
+
+///设置开机启动 	systemctl enable firewalld.service
+
+///禁止开机启动	systemctl disable firewalld.service
+
+//启动服务	systemctl start firewalld.service
+
+//停止服务	systemctl stop firewalld.service
+
+//查看状态	systemctl status firewalld.service
+
+//显示状态	firewalld-cmd --state
+
+##### zone 管理
+///列出所有支持的zone  
+
+firewall-cmd --get-zone
+
+///查看当前默认的zone 
+
+firewall-cmd --get-default-zone
+
+///列出所有支持的Service
+
+firewall-cmd --get-services
+
+///查看当前zone 中加载的service
+
+firewall-cmd --list-services
+
+#### 基本操作
+
+///  查看所有打开的端口
+
+firewall-cmd --zone=public --list-ports
+
+///更新防火墙规则
+
+firewall-cmd --reload
+
+///查看区域信息
+
+firewall-cmd --get-active-zones
+
+///查看指定接口所属区域
+
+firewall-cmd --get-zone-of-interface=eth0
+
+///拒绝所有包
+
+firewall-cmd --panic-on
+
+///取消拒绝状态
+
+firewall-cmd --panic-off
+
+///查看是否拒绝
+
+firewall-cmd --query-panic
+
+#### 添加端口
+
+/// 添加80端口
+
+firewall-cmd --zone=public --add-port=90/tcp --permanent
+
+//重新载入
+
+firewall-cmd --reload
+
+//查看80端口
+
+firewall-cmd --zone=public --query-port =80/tcp
+
+//删除端口
+firewall-cmd --zone=public  --remove-port=80/tcp --permanent 
+
+/// 为PUBLIC 区域添加持久性的HTTP和HTTPS规则
+
+firewall-cmd --zone=public --add-service=http --permanent
+firewall-cmd -- zone=public --add-service=https --permanent
+
+///列出所有的规则
+
+firewall-cmd --list-all 
+
+### Linux 内核防火墙的工作原理
+
+Linux 内核提供的防火墙功能通过netfiter框架实现，并提供了iptables工具配置和修改防火墙的规则
+
+netfilter 的通用框架协议不依赖于具体的协议，而是为每种网络协议定义一套钩子函数，在数据包经过协议栈的几个关键点时被调用，在这几个点中，协议栈将数据包及钩子函数作为参数传递给netfilter框架。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
