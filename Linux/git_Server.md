@@ -1,4 +1,5 @@
 # 搭建Git服务器
+> https://blog.csdn.net/qq_34284638/article/details/70154557
  1、安装git apt install git
  2、创建用户 useradd git
  3、创建登陆证书
