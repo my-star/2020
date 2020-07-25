@@ -1,0 +1,50 @@
+文件打开 
+
+data=open('filename')
+
+Python 中的基本输入机制是基于行的：从文本文件向程序读入数据时，一次会达到一个数据行
+
+Python 中的open() BIF 就是用来与文件交互。如果与for语句结合使用，可以非常容易地读取文件。
+
+使用open() BIF 处理文件中的数据时，会创建一个迭代器从文件向你的代码行输入数据行，一次传入一行数据
+
+先考虑Python中的标准“打开-处理-关闭”
+导入OS模块
+```python
+
+>>>import os
+>>>os.getcwd() #获取当前工作目录
+>>>os.chdir('../') #切换到上级目录
+
+#打开数据文件，读取文件的前两行
+>>> data = open('sketch.txt') #打开一个命名文件，将文件赋至data文件对象
+>>> print(data.readline(), end='') #使用readline()方法从文件获取一个数据行，打印数据行
+#退回到文件的起始位置
+>>> data.seek(0)
+
+>>> for each_Line in data: 	#标准输入，以文件数据作为输入
+	print(each_line,end='')
+
+
+#处理完文件，将文件关闭 
+
+>>> data.close()
+
+```
+### split()方法
+split()方法返回一个字符串列表，这会赋至一个目标标识符列表，这称为多重赋值（multiple assignment):
+```python
+>>> (role,line_spoken) =each_line.split(":")
+# 左边是一个目标标识符列表，
+```
+
+```
+ Other Man: Now let's get one thing quite clear: I most definitely told you!
+
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+ValueError: too many values to unpack
+```
+> 数据行中有两个冒号，而不是一个冒号，多余的数据导致split()无法正常工作
+> 数据中出现额外的冒号时，split()将这行分为3个部分，代码没有告诉split()怎样处理第3部分数据。出现ValueError,值太多
+
