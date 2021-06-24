@@ -1,0 +1,22 @@
+<h2>Record List</h2>
+<table border="1">
+    <tr bgcolor="grey">
+        <td>RecordNum</td>
+        <td>Title</td>
+        <td>User</td>
+        <td>Depart</td>
+        <td>Record_Time</td>
+        <td>Detail</td>
+    </tr>
+    {% for record in records %}
+        <tr>
+            <td>{{record.record_num}}</td>
+            <td>{{record.title}}</td>
+            <td>{{record.name}}</td>
+            <td>{{record.depart}}</td>
+            <td>{{record.record_time}}</td>
+            <td><a href="{% url 'record_detail' record.id %}}">Detail</a> </td>
+        </tr>
+    {% endfor %}
+</table>
+
