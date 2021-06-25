@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('notebook/',include('notebook.urls')),
     path('blog/', include('blog.urls')),
+    path('polls/', include('polls.urls')),
     # path('library/',include('library.urls'))
 ]
