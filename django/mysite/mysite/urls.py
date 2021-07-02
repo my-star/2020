@@ -19,10 +19,11 @@ from django.views.generic import RedirectView
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/library/')),
+    #path('', RedirectView.as_view(url='/library/')),
     path('admin/', admin.site.urls),
-    path('notebook/',include('notebook.urls')),
-    path('blog/', include('blog.urls')),
-    path('polls/', include('polls.urls')),
+    #path('notebook/',include('notebook.urls')),
+    #path('blog/', include('blog.urls')),
+    #path('polls/', include('polls.urls')),
     # path('library/',include('library.urls'))
+    path('user/',include('user.urls'))
 ]

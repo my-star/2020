@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'library.apps.LibraryConfig',
     'notebook.apps.NotebookConfig',
     'polls.apps.PollsConfig',
+    'user.apps.UserConfig'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["mysite/templates/"],
+        'DIRS': [""],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

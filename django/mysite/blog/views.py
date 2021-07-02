@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from blog.models import Post, Comment
-from blog.forms import CommentForm
+from .models import Post, Comment
+from .forms import CommentForm
 def blog_index(request):
     posts = Post.objects.all().order_by('-created_on')
     context = {
@@ -23,7 +23,7 @@ def blog_detail(request,pk):
         form =CommentForm(request.POST)
         if form.is_valid():
             comment = Comment(
-                author = form.cleaned_data("author"),
+                author = form.cleaned_data["author"],
                 body = form.cleaned_data["body"],
                 post = post
             )

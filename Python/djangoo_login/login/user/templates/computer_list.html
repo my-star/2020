@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<table>
+    <tr>
+        <td>ComputerName</td>
+        <td>ComputerUser</td>
+        <td>ComputerDepart</td>
+        <td>ComputerLocation</td>
+    </tr>
+    {% for computer in computers %}
+    <tr>
+        <td>{{computer.computer_name}}</td>
+        <td>{{computer.computer_user.username}}</td>
+        <td>{{computer.username.depart}}</td>
+        <td>{{computer.location}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+
