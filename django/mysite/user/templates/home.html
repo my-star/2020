@@ -1,0 +1,7 @@
+{% for record in records %}
+    <p>{{record.record_text}}</p>
+    <p>{{record.username}}</p>
+    <p>{{record.detail_text}}</p>
+    <p>{{record.depart.depart_name}}</p>
+{% endfor %}
+<a href="{% url 'logout' %}">Logout</a>
